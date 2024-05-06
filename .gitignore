@@ -1,7 +1,7 @@
 #Ignore node modules
-Backend/node_modules
-Frontend/node_modules
+Server/node_modules
+Client/node_modules
 
 #ignore .env files
-Frontend/.env
-Backend/.env
+Client/.env
+Server/.env
