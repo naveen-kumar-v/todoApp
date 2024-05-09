@@ -31,7 +31,8 @@ export const login = async (req, res) => {
 
     const respData = {
       id: user._id,
-      email: user.email
+      email: user.email,
+      name: user.name
     }
 
     return res.status(200).json({

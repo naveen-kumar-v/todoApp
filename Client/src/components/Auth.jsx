@@ -33,6 +33,7 @@ export const Auth = () => {
       const resp = await axios.post(`${baseUrl}/login`, body, { headers });
       console.log(resp.data);
       localStorage.setItem("userId", resp.data.data.id);
+      localStorage.setItem("name", resp.data.data.name);
       toast.success(resp.data.message);
       navigate("/todos");
     } catch (err) {
@@ -46,24 +47,24 @@ export const Auth = () => {
       const resp = await axios.post(`${baseUrl}/signup`, body, { headers });
       // console.log(resp);
       localStorage.setItem("userId", resp.data.data.id);
-      localStorage.setItem("userName", resp.data.data.name);
+      localStorage.setItem("name", resp.data.data.name);
       toast.success(resp.data.message);
       navigate("/todos");
     } catch (err) {
-      console.log(err);
+      console.log(err.response);
       toast.error(err.response.data.message);
     }
   };
 
   return (
-    <div className="bg-[#071f35] w-screen h-screen flex justify-center items-center ">
-      <div className="text-white bg-[#073642] px-8 py-4 rounded-lg border-2 border-[#839496af] flex flex-col justify-start items-center gap-4 ">
+    <div className="bg-gradient-to-tl from-[#071f35] via-[#0e426c] to-[#071f35] w-screen h-screen flex justify-center items-start md:items-center pt-20 md:p-4 ">
+      <div className="text-white bg-[rgba(7,31,53,0.3)] px-8 md:px-20 py-10 rounded-lg border-2 border-[#839496af] flex flex-col justify-start items-center gap-4">
         <div className="flex w-full justify-evenly items-center bg-[#1b4b57] p-1 rounded-xl mb-2">
           <button
             className={` rounded-lg py-2 flex-1 transition-all ${
               activeTab !== "login"
                 ? "opacity-60 bg-[#1b4b57] border-transparent"
-                : "bg-[#073642] font-bold"
+                : "bg-gradient-to-tr from-[#071f35] via-[#0e426c] to-[#0a4f82] font-bold"
             }`}
             onClick={() => setActiveTab("login")}
           >
@@ -73,7 +74,7 @@ export const Auth = () => {
             className={` rounded-lg py-2 flex-1 transition-all ${
               activeTab !== "signup"
                 ? "opacity-60 bg-[#1b4b57] "
-                : " bg-[#073642] font-bold"
+                : " bg-[#0e426c] font-bold"
             }`}
             onClick={() => setActiveTab("signup")}
           >

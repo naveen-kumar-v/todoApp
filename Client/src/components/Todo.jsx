@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 const Todo = () => {
   const userId = localStorage.getItem("userId");
-  const userName = localStorage.getItem("userName");
+  const name = localStorage.getItem("name");
   const [todos, setTodos] = useState([]);
   const [body, setBody] = useState({
     todoContent: "",
@@ -147,18 +147,18 @@ const Todo = () => {
     navigate("/login");
   };
   return (
-    <div className="bg-[#071f35] w-screen h-screen flex justify-center items-center relative">
+    <div className="bg-gradient-to-tl from-[#071f35] via-[#0e426c] to-[#071f35] h-screen flex justify-center items-center relative ">
       <div className="absolute transition-all left-4 top-4 text-white font-bold text-xl flex gap-2 items-center  p-2 px-6 rounded-lg">
-        Hello, {userName}
+        Hello, {name}
       </div>
       <button
         className="absolute transition-all right-4 top-4 text-white font-semibold flex gap-2 items-center hover:bg-[#154c5a] p-2 px-6 rounded-lg"
         onClick={handleLogout}
       >
         <LogOut size={20} color="#ffffff" />
-        <p>Logout</p>
+        <p className="hidden sm:block">Logout</p>
       </button>
-      <div className="text-white bg-[#073642] px-8 py-4 rounded-lg border-2 border-[#839496] flex flex-col justify-start items-center gap-4">
+      <div className="text-white bg-[#073642] px-8 py-4 mt-12 rounded-lg border-2 border-[#839496] flex flex-col justify-start items-center gap-4  w-[21rem] md:w-[30rem]">
         <h1 className="text-center font-bold text-2xl">Todo App</h1>
 
         {/* Create todo */}
@@ -167,11 +167,11 @@ const Todo = () => {
             name="todoContent"
             id="todoContent"
             cols="30"
-            rows="2"
-            maxLength={50}
+            rows="3"
+            maxLength={100}
             value={body.todoContent}
             placeholder="Add a todo..."
-            className="bg-[rgba(255,255,255,0.1)] rounded focus:outline-none px-1.5 py-0.5 h-auto w-[24rem] border-2 border-transparent focus:border-blue-500 resize-none"
+            className="bg-[rgba(255,255,255,0.1)] rounded focus:outline-none px-1.5 py-0.5 h-auto w-[17rem] md:w-[25.5rem] border-2 border-transparent focus:border-[#0a4f82] resize-none"
             onChange={onChange}
           ></textarea>
 
@@ -180,7 +180,7 @@ const Todo = () => {
             {edit ? (
               <>
                 <button
-                  className="bg-red-700 px-3.5 py-0.5 rounded font-semibold active:bg-red-600 w-full disabled:opacity-80
+                  className="bg-red-700 px-3.5 py-1 rounded font-semibold active:bg-red-600 w-full disabled:opacity-80
                               disabled:pointer-events-none"
                   onClick={() => {
                     setEdit(null);
@@ -192,7 +192,7 @@ const Todo = () => {
                 </button>
 
                 <button
-                  className="bg-green-700 px-3.5 py-0.5 rounded font-semibold active:bg-green-600 w-full disabled:opacity-80
+                  className="bg-green-700 px-3.5 py-1 rounded font-semibold active:bg-green-600 w-full disabled:opacity-80
                               disabled:pointer-events-none"
                   onClick={updateTodo}
                   disabled={isSame()}
@@ -203,7 +203,10 @@ const Todo = () => {
             ) : (
               <>
                 <button
-                  className="bg-green-600 px-3.5 py-0.5 rounded font-semibold transition-all active:bg-green-500 w-full disabled:opacity-80
+                  className="transition-all bg-gradient-to-t from-[#21df67] to-[#22c55e] px-3.5 py-1 rounded font-semibold text-[#052e14]
+                  hover:bg-gradient-to-t hover:from-[#259e52] hover:to-[#16a34a]
+                  active:bg-gradient-to-t active:from-[#15803c] active:to-[#166533]
+                  w-full disabled:bg-gradient-to-t disabled:from-[#dcfce8] disabled:to-[#dcfce8] disabled:text-[#4ade81] disabled:opacity-80
                               disabled:pointer-events-none"
                   onClick={createTodo}
                   disabled={isEmpty}
@@ -224,7 +227,7 @@ const Todo = () => {
         {/* display todos */}
         {todos.length ? (
           <div
-            className={`w-full flex flex-col gap-2 max-h-48 overflow-y-auto ${
+            className={`w-full flex flex-col gap-2 max-h-64 overflow-y-auto ${
               edit &&
               "backdrop-blur-4xl bg-[rgba(255,255,255,0.1)] pointer-events-none"
             }`}
@@ -233,7 +236,7 @@ const Todo = () => {
               return (
                 <div
                   key={todo._id}
-                  className={`w-full max-w-96 bg-[rgba(255,255,255,0.1)] p-2 rounded relative group ${
+                  className={`w-full bg-[rgba(255,255,255,0.1)] p-2 rounded relative group ${
                     todo.finished ? "opacity-80" : "opacity-100"
                   }`}
                 >
@@ -251,14 +254,14 @@ const Todo = () => {
                         markAsCompleted(todo._id);
                       }}
                     />
-                    <label
-                      htmlFor="checkbox"
-                      className={`ms-2 text-[0.95rem] max-w-[18rem] pb-1 font-medium text-gray-900 dark:text-gray-300 ${
+                    <p
+                      // htmlFor="checkbox"
+                      className={`ms-2 text-sm md:text-[0.95rem] max-w-[75%] pb-1 font-medium text-gray-900 dark:text-gray-300 ${
                         todo.finished && "line-through"
                       }`}
                     >
                       {todo.todoContent}
-                    </label>
+                    </p>
                   </div>
 
                   <p className="text-[0.75rem] font-medium italic text-gray-100 mt-1  pt-0.5 absolute right-4 bottom-1">
