@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 const Todo = () => {
   const userId = localStorage.getItem("userId");
-  const name = localStorage.getItem("name");
+  const name = localStorage.getItem("name").split(" ")[0] || "Guest";
   const [todos, setTodos] = useState([]);
   const [body, setBody] = useState({
     todoContent: "",
@@ -147,18 +147,23 @@ const Todo = () => {
     navigate("/login");
   };
   return (
-    <div className="bg-gradient-to-tl from-[#071f35] via-[#0e426c] to-[#071f35] h-screen flex justify-center items-center relative ">
-      <div className="absolute transition-all left-4 top-4 text-white font-bold text-xl flex gap-2 items-center  p-2 px-6 rounded-lg">
-        Hello, {name}
+    <div className="bg-gradient-to-tl from-[rgb(7,31,53)] via-[#0e426c] to-[#071f35] h-screen flex md:justify-center justify-start items-center relative flex-col">
+      <div className="absolute top-4 w-full text-white font-bold sm:text-xl flex gap-2 items-center justify-between p-2 px-6 md:px-12 rounded-lg text-lg">
+        <p>
+          Hello,{" "}
+          <span className="bg-gradient-to-r from-[#3cadf4] via-[#f0f8ff] to-[#3cadf4] text-transparent bg-clip-text capitalize">
+            {name}
+          </span>
+        </p>
+        <button
+          className=" transition-all text-white font-semibold flex gap-2 items-center hover:bg-[#154c5a] p-2 px-6 rounded-lg"
+          onClick={handleLogout}
+        >
+          <LogOut size={20} color="#ffffff" />
+          <p className="text-lg sm:text-xl">Logout</p>
+        </button>
       </div>
-      <button
-        className="absolute transition-all right-4 top-4 text-white font-semibold flex gap-2 items-center hover:bg-[#154c5a] p-2 px-6 rounded-lg"
-        onClick={handleLogout}
-      >
-        <LogOut size={20} color="#ffffff" />
-        <p className="hidden sm:block">Logout</p>
-      </button>
-      <div className="text-white bg-[#073642] px-8 py-4 mt-12 rounded-lg border-2 border-[#839496] flex flex-col justify-start items-center gap-4  w-[21rem] md:w-[30rem]">
+      <div className="text-white bg-[#073642] px-8 py-4 md:mt-12 rounded-lg border-2 border-[#839496] flex flex-col justify-start items-center gap-4  w-[21rem] md:w-[30rem] mt-28">
         <h1 className="text-center font-bold text-2xl">Todo App</h1>
 
         {/* Create todo */}
@@ -180,7 +185,11 @@ const Todo = () => {
             {edit ? (
               <>
                 <button
-                  className="bg-red-700 px-3.5 py-1 rounded font-semibold active:bg-red-600 w-full disabled:opacity-80
+                  className="transition-all 
+                  bg-gradient-to-t from-[#f00000] to-[#ff2323] 
+                  hover:bg-gradient-to-t hover:from-[#d70000] hover:to-[#f00000]
+                  active:bg-gradient-to-t active:from-[#b10303] active:to-[#d70000]
+                  px-3.5 text-white py-1 rounded font-semibold w-full disabled:opacity-80
                               disabled:pointer-events-none"
                   onClick={() => {
                     setEdit(null);
@@ -192,7 +201,12 @@ const Todo = () => {
                 </button>
 
                 <button
-                  className="bg-green-700 px-3.5 py-1 rounded font-semibold active:bg-green-600 w-full disabled:opacity-80
+                  className="transition-all bg-gradient-to-t from-[#21df67] to-[#22c55e]
+                  hover:bg-gradient-to-t hover:from-[#259e52] hover:to-[#16a34a]
+                  active:bg-gradient-to-t active:from-[#15803c] active:to-[#166533]
+                  disabled:bg-gradient-to-t disabled:from-[#dcfce8] disabled:to-[#dcfce8]
+                  disabled:text-[#4ade81] text-[#052e14]
+                  px-3.5 py-1 rounded font-semibold active:bg-green-600 w-full disabled:opacity-80
                               disabled:pointer-events-none"
                   onClick={updateTodo}
                   disabled={isSame()}
@@ -203,7 +217,7 @@ const Todo = () => {
             ) : (
               <>
                 <button
-                  className="transition-all bg-gradient-to-t from-[#21df67] to-[#22c55e] px-3.5 py-1 rounded font-semibold text-[#052e14]
+                  className="transition-all bg-gradient-to-t from-[#21df67] to-[#22c55e] px-3.5 py-1 rounded font-semibold text-[#052e14] 
                   hover:bg-gradient-to-t hover:from-[#259e52] hover:to-[#16a34a]
                   active:bg-gradient-to-t active:from-[#15803c] active:to-[#166533]
                   w-full disabled:bg-gradient-to-t disabled:from-[#dcfce8] disabled:to-[#dcfce8] disabled:text-[#4ade81] disabled:opacity-80

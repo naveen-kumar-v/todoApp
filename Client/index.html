@@ -1,13 +1,41 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" id="favicon" type="image/svg+xml" href="/vite1.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React</title>
+    <title>To-Do Now</title>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    <script>
+      // Update the title dynamically based on URL path
+      const updateTitle = () => {
+        const path = window.location.pathname.slice(1); // Remove leading slash
+        document.title = `To-Do Now | ${path}`;
+      };
+
+      // Change the favicon dynamically based on the theme color
+      const updateFavicon = () => {
+        const themeColor = window
+          .getComputedStyle(document.body)
+          .getPropertyValue("background-color");
+        const favicon = document.getElementById("favicon");
+        if (themeColor === "rgb(7, 31, 53)") {
+          favicon.href = "/vite1.svg"; // Dark theme
+        } else {
+          favicon.href = "/vite.svg"; // Light theme
+        }
+      };
+
+      // Call updateTitle and updateFavicon on initial load and whenever the URL changes
+      updateTitle();
+      updateFavicon();
+      window.addEventListener("popstate", () => {
+        updateTitle();
+        updateFavicon();
+      });
+    </script>
   </body>
 </html>

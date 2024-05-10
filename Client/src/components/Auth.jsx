@@ -12,6 +12,7 @@ export const Auth = () => {
   });
   const [viewPassword, setViewPassword] = useState(false);
   const [activeTab, setActiveTab] = useState("login");
+  // const [disabled, setDisabled] = useState(false);
   const navigate = useNavigate();
   const baseUrl = import.meta.env.VITE_BASE_URL;
   const headers = { "Content-Type": "application/json" };
@@ -24,34 +25,29 @@ export const Auth = () => {
     }));
   };
 
-  // const emailPattern = "";
-  const allfieldsFilled =
-    body.email && body.password && body.password.length >= 8;
-
-  const handleLogin = async () => {
-    try {
-      const resp = await axios.post(`${baseUrl}/login`, body, { headers });
-      console.log(resp.data);
-      localStorage.setItem("userId", resp.data.data.id);
-      localStorage.setItem("name", resp.data.data.name);
-      toast.success(resp.data.message);
-      navigate("/todos");
-    } catch (err) {
-      console.log(err.response);
-      toast.error(err.response.data.message);
-    }
+  const validateEmail = (email) => {
+    // Regular expression for email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   };
 
-  const handleSignup = async () => {
+  const allfieldsFilled =
+    body.email &&
+    validateEmail(body.email) &&
+    body.password &&
+    body.password.length >= 8;
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
     try {
-      const resp = await axios.post(`${baseUrl}/signup`, body, { headers });
-      // console.log(resp);
+      const url = activeTab === "login" ? "/login" : "/signup";
+      const resp = await axios.post(`${baseUrl}${url}`, body, { headers });
       localStorage.setItem("userId", resp.data.data.id);
       localStorage.setItem("name", resp.data.data.name);
       toast.success(resp.data.message);
       navigate("/todos");
     } catch (err) {
-      console.log(err.response);
+      console.error(err.response);
       toast.error(err.response.data.message);
     }
   };
@@ -64,7 +60,7 @@ export const Auth = () => {
             className={` rounded-lg py-2 flex-1 transition-all ${
               activeTab !== "login"
                 ? "opacity-60 bg-[#1b4b57] border-transparent"
-                : "bg-gradient-to-tr from-[#071f35] via-[#0e426c] to-[#0a4f82] font-bold"
+                : "bg-[#073642] font-bold"
             }`}
             onClick={() => setActiveTab("login")}
           >
@@ -74,7 +70,7 @@ export const Auth = () => {
             className={` rounded-lg py-2 flex-1 transition-all ${
               activeTab !== "signup"
                 ? "opacity-60 bg-[#1b4b57] "
-                : " bg-[#0e426c] font-bold"
+                : " bg-[#073642] font-bold"
             }`}
             onClick={() => setActiveTab("signup")}
           >
@@ -82,7 +78,10 @@ export const Auth = () => {
           </button>
         </div>
 
-        <div className="flex justify-center items-center gap-4 flex-col">
+        <form
+          onSubmit={handleFormSubmit}
+          className="flex justify-center items-center gap-4 flex-col"
+        >
           {activeTab === "signup" && (
             <div className="flex w-full justify-between items-center">
               <label htmlFor="name" name="name" className="font-bold">
@@ -138,12 +137,12 @@ export const Auth = () => {
             className={`bg-green-600 rounded w-full py-1 font-bold mt-2 ${
               !allfieldsFilled ? "opacity-60" : "opacity-100"
             }`}
-            onClick={activeTab === "login" ? handleLogin : handleSignup}
+            onClick={handleFormSubmit}
             disabled={!allfieldsFilled}
           >
             {activeTab === "login" ? "Login" : "Sign Up"}
           </button>
-        </div>
+        </form>
       </div>
     </div>
   );
