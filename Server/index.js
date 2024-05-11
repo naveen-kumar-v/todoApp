@@ -16,8 +16,4 @@ app.use("/api/v1", TodoRoutes);
 
 app.listen(port, () => console.log("Server started at ", port))
 
-// app.get('/', (req, res) => {
-//   res.send("<h1>Hello ji</h1>")
-// })
-
 dbConnect();
