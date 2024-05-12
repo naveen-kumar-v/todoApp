@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { format } from "date-fns";
 import { Trash2, SquarePen, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { SkeletonLoader, Loader } from "./Loader";
 
 const Todo = () => {
   const userId = localStorage.getItem("userId");
@@ -14,6 +15,8 @@ const Todo = () => {
     userId,
   });
   const [edit, setEdit] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [btnLoading, setBtnLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -40,43 +43,48 @@ const Todo = () => {
   //create Todo
   const createTodo = async () => {
     try {
+      setBtnLoading(true);
       const resp = await axios.post(`${baseUrl}/createTodo`, body, { headers });
-      // console.log(resp.data.data);
       toast.success(resp.data.message);
       resetValues();
       getTodos();
+      setBtnLoading(false);
     } catch (err) {
       toast.error(err.message);
       console.log(err);
+      setBtnLoading(false);
     }
   };
 
   //update Todo
   const updateTodo = async () => {
-    console.log(`${baseUrl}/updateTodo/${edit}`);
     try {
+      setBtnLoading(true);
       const resp = await axios.put(`${baseUrl}/updateTodo/${edit._id}`, body, {
         headers,
       });
-      console.log(resp.data.data);
       toast.success(resp.data.message);
       resetValues();
       getTodos();
       setEdit(null);
+      setBtnLoading(false);
     } catch (err) {
       toast.error(err.message);
       console.log(err);
+      setBtnLoading(false);
     }
   };
 
   //getTodos
   const getTodos = async () => {
     try {
+      setLoading(true); // Set loading state to true when fetching data
       const resp = await axios.get(`${baseUrl}/getTodos`, { headers });
-      // console.log(resp.data.data);
       setTodos(resp.data.data);
+      setLoading(false); // Set loading state to false after fetching data
     } catch (err) {
       console.log(err);
+      setLoading(false); // Set loading state to false in case of error
     }
   };
 
@@ -146,6 +154,7 @@ const Todo = () => {
     localStorage.removeItem("userId");
     navigate("/login");
   };
+
   return (
     <div className="bg-gradient-to-tl from-[rgb(7,31,53)] via-[#0e426c] to-[#071f35] h-screen flex md:justify-center justify-start items-center relative flex-col">
       <div className="absolute top-4 w-full text-white font-bold sm:text-xl flex gap-2 items-center justify-between p-2 px-6 md:px-12 rounded-lg text-lg">
@@ -209,9 +218,9 @@ const Todo = () => {
                   px-3.5 py-1 rounded font-semibold active:bg-green-600 w-full disabled:opacity-80
                               disabled:pointer-events-none"
                   onClick={updateTodo}
-                  disabled={isSame()}
+                  disabled={isSame() || btnLoading}
                 >
-                  Update Todo
+                  {btnLoading ? <Loader /> : "Update Todo"}
                 </button>
               </>
             ) : (
@@ -223,9 +232,9 @@ const Todo = () => {
                   w-full disabled:bg-gradient-to-t disabled:from-[#dcfce8] disabled:to-[#dcfce8] disabled:text-[#4ade81] disabled:opacity-80
                               disabled:pointer-events-none"
                   onClick={createTodo}
-                  disabled={isEmpty}
+                  disabled={isEmpty || btnLoading}
                 >
-                  Add Todo
+                  {btnLoading ? <Loader /> : "Add Todo"}
                 </button>
               </>
             )}
@@ -238,8 +247,12 @@ const Todo = () => {
           <p className="h-0.5 bg-gray-300 flex-1"></p>
         </div>
 
+        {/* Display Loader if loading */}
+        {loading && <SkeletonLoader />}
+        {loading && <SkeletonLoader />}
+
         {/* display todos */}
-        {todos.length ? (
+        {!loading && todos.length ? (
           <div
             className={`w-full flex flex-col gap-2 max-h-64 overflow-y-auto ${
               edit &&
@@ -269,7 +282,6 @@ const Todo = () => {
                       }}
                     />
                     <p
-                      // htmlFor="checkbox"
                       className={`ms-2 text-sm md:text-[0.95rem] max-w-[75%] pb-1 font-medium text-gray-900 dark:text-gray-300 ${
                         todo.finished && "line-through"
                       }`}
@@ -278,7 +290,7 @@ const Todo = () => {
                     </p>
                   </div>
 
-                  <p className="text-[0.75rem] font-medium italic text-gray-100 mt-1  pt-0.5 absolute right-4 bottom-1">
+                  <p className="text-[0.5rem] md:text-[0.75rem] font-medium italic text-gray-100 mt-1  pt-0.5 absolute right-4 bottom-1">
                     {todo.finished ? (
                       `Completed At : ${formatTime(todo?.completedAt)}`
                     ) : (
@@ -309,7 +321,11 @@ const Todo = () => {
             })}
           </div>
         ) : (
-          <div className="text-gray-400 font-semibold">No todos to show...</div>
+          !loading && (
+            <div className="text-gray-400 font-semibold">
+              No todos to show...
+            </div>
+          )
         )}
       </div>
     </div>

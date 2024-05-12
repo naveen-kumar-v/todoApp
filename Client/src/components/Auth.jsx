@@ -3,6 +3,7 @@ import axios from "axios";
 import { Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { Loader } from "./Loader";
 
 export const Auth = () => {
   const [body, setBody] = useState({
@@ -12,7 +13,7 @@ export const Auth = () => {
   });
   const [viewPassword, setViewPassword] = useState(false);
   const [activeTab, setActiveTab] = useState("login");
-  // const [disabled, setDisabled] = useState(false);
+  const [loader, setLoader] = useState(false);
   const navigate = useNavigate();
   const baseUrl = import.meta.env.VITE_BASE_URL;
   const headers = { "Content-Type": "application/json" };
@@ -40,15 +41,18 @@ export const Auth = () => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     try {
+      setLoader(true);
       const url = activeTab === "login" ? "/login" : "/signup";
       const resp = await axios.post(`${baseUrl}${url}`, body, { headers });
       localStorage.setItem("userId", resp.data.data.id);
       localStorage.setItem("name", resp.data.data.name);
       toast.success(resp.data.message);
       navigate("/todos");
+      setLoader(false);
     } catch (err) {
       console.error(err.response);
       toast.error(err.response.data.message);
+      setLoader(false);
     }
   };
 
@@ -138,9 +142,9 @@ export const Auth = () => {
               !allfieldsFilled ? "opacity-60" : "opacity-100"
             }`}
             onClick={handleFormSubmit}
-            disabled={!allfieldsFilled}
+            disabled={!allfieldsFilled || loader}
           >
-            {activeTab === "login" ? "Login" : "Sign Up"}
+            {loader ? <Loader /> : activeTab === "login" ? "Login" : "Sign Up"}
           </button>
         </form>
       </div>
